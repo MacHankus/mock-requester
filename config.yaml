@@ -1,0 +1,13 @@
+external-api:
+  incoming: 
+    type: http
+    path: external-api/endpoint
+  outcoming:
+    type: http
+    url: "http://localhost:9006/"
+    method: post
+    payload:     
+      field: ${refferenceField}
+      field_2: 123
+    headers: 
+      Content-Type: application/json

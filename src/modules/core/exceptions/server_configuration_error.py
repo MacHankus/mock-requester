@@ -1,0 +1,2 @@
+class ServerConfigurationError(Exception):
+    pass

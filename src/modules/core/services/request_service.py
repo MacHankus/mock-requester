@@ -1,0 +1,75 @@
+from typing import Dict
+from typing import List
+from typing import TypeVar
+
+from dependency_injector.wiring import Provide
+from dependency_injector.wiring import inject
+from loguru import logger
+
+from modules.adapters.replacers.replacer import crawler
+from modules.core.entities.config_entity import ConfigTaskEntity
+from modules.core.enums.config import IncomingRequestsTypeEnum
+from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
+from modules.core.ports.config_parser_port import ConfigParserPort
+from modules.core.ports.request_maker_port import RequestMakerPort
+from modules.core.ports.request_service_port import RequestServicePort
+from settings import settings
+
+RequestsToRun = TypeVar("RequestsToRun")
+
+
+
+class RequestService(RequestServicePort):
+    @inject
+    def __init__(
+        self,
+        config_parser: ConfigParserPort = Provide["config_parser"],
+        request_maker: RequestMakerPort = Provide["request_maker"],
+    ):
+        self.config_parser = config_parser
+        self.request_maker = request_maker
+
+    def make_request(self, path: str, body: Dict) -> None:
+        logger.info(f"Running request for config: {path}")
+        try:
+            self.config_parser.parse_config_file(settings.CONFIG_FILE_PATH)
+        except FileNotFoundError:
+            logger.exception(f"Config file path: {settings.CONFIG_FILE_PATH} not found.")
+            return
+        for key, config_task in self.config_parser.get_config().items():
+            if config_task.incoming.path == path:
+                self._run_request_for_config_task(
+                    config_task=config_task, config_name=key, body=body
+                )
+
+    def _requests_to_run(
+        self, requests_to_run: RequestsToRun | List[RequestsToRun]
+    ) -> List[RequestsToRun]:
+        if isinstance(requests_to_run, list):
+            requests_to_run = requests_to_run
+        else:
+            requests_to_run = [requests_to_run]
+
+        return requests_to_run
+
+    def _run_request_for_config_task(
+        self, config_task: ConfigTaskEntity, config_name: str, body: Dict
+    ) -> None:
+        logger.info(
+            f"Config with name: {config_name} is configured for path: {config_task.incoming.path}"
+        )
+
+        requests_to_run = self._requests_to_run(config_task.outcoming)
+
+        for request_to_run in requests_to_run:
+            if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
+                crawler(request_to_run.payload, body)
+                try:
+                    self.request_maker.make(
+                        url=request_to_run.url,
+                        method=request_to_run.method,
+                        payload=request_to_run.payload,
+                        headers=request_to_run.headers,
+                    )
+                except ServiceUnavailableError:
+                    logger.info(f"Error while doing request ({request_to_run})")
