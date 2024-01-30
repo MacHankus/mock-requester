@@ -1,5 +1,4 @@
 import uvicorn
-from art import text2art
 from loguru import logger
 
 from app import APP_FROZEN
@@ -8,7 +7,6 @@ from definitions import PROJECT_NAME
 from settings import settings
 
 if __name__ == "__main__":
-    logger.info("\n" + text2art(PROJECT_NAME))
     logger.info(PROJECT_NAME)
     uvicorn.run(
         app if APP_FROZEN else "app:app",
