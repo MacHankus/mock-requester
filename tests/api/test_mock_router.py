@@ -6,14 +6,14 @@ from modules.core.entities.config_entity import (
     IncomingEntity,
     OutcomingHttpEntity,
 )
-from modules.core.enums.config import IncomingRequestsTypeEnum
+from modules.core.enums.config import IncomingRequestsTypeEnum, OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
 from tests.api.api_client import client
 import yaml
 
 from pytest_httpx import HTTPXMock
 
-def test_should_204():
+def test_should_return_204():
     # Act
     response = client.post(
         url="/",
@@ -23,7 +23,7 @@ def test_should_204():
     assert response.status_code == 204
 
 
-def test_should_send_request_from_settings(
+def test_should_send_request_from_settings_with_success(
     set_config_file_path_in_settings: Callable, create_temp_file: Callable
 ):
     # Arrange
@@ -34,14 +34,14 @@ def test_should_send_request_from_settings(
     headers = {"Content-Type": "application/json"}
 
     config = ConfigEntity(
-        __root__={
+        {
             "send_it_somewhere": ConfigTaskEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=IncomingRequestsTypeEnum.HTTP,
+                        type=OutcomingTypeEnum.HTTP.value,
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -51,8 +51,8 @@ def test_should_send_request_from_settings(
             )
         }
     )
-    config_dict = config.dict()
-    yaml_content = yaml.dump(config_dict['__root__'])
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
 
@@ -75,14 +75,14 @@ def test_should_send_http_request_from_settings(
     headers = {"Content-Type": "application/json"}
 
     config = ConfigEntity(
-        __root__={
+        {
             "send_it_somewhere": ConfigTaskEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=IncomingRequestsTypeEnum.HTTP,
+                        type=OutcomingTypeEnum.HTTP.value,
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -92,8 +92,8 @@ def test_should_send_http_request_from_settings(
             )
         }
     )
-    config_dict = config.dict()
-    yaml_content = yaml.dump(config_dict['__root__'])
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
 
@@ -126,14 +126,14 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
     headers = {"Content-Type": "application/json"}
 
     config = ConfigEntity(
-        __root__={
+        {
             "send_it_somewhere": ConfigTaskEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=IncomingRequestsTypeEnum.HTTP,
+                        type=OutcomingTypeEnum.HTTP.value,
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -143,8 +143,8 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
             )
         }
     )
-    config_dict = config.dict()
-    yaml_content = yaml.dump(config_dict['__root__'])
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
 

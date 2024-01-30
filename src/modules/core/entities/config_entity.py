@@ -2,9 +2,9 @@ from typing import Dict
 from typing import List
 from typing import Literal
 
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel, ConfigDict, RootModel
 
-from modules.core.enums.config import IncomingRequestsTypeEnum
+from modules.core.enums.config import IncomingRequestsTypeEnum, OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
 
 
@@ -12,19 +12,17 @@ class IncomingEntity(BaseModel):
     type: IncomingRequestsTypeEnum
     path: str
 
-    class Config:
-        use_enum_values = True  # <--
+    model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
 class OutcomingHttpEntity(BaseModel):
-    type: Literal[IncomingRequestsTypeEnum.HTTP]
+    type: Literal[OutcomingTypeEnum.HTTP.value]
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None
     headers: Dict
 
-    class Config:
-        use_enum_values = True  # <--
+    model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
 class ConfigTaskEntity(BaseModel):

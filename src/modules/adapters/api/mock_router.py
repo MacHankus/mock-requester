@@ -13,7 +13,7 @@ from modules.core.ports.request_service_port import RequestServicePort
 router = APIRouter()
 
 
-@router.post("/{rest_of_path:path}", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("{rest_of_path:path}", status_code=status.HTTP_204_NO_CONTENT)
 @inject
 def process_post(
     rest_of_path: str = Path(),
