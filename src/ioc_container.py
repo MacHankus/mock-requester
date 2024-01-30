@@ -7,7 +7,6 @@ from modules.core.services.request_service import RequestService
 
 
 class Container(containers.DeclarativeContainer):
-    config = providers.Configuration()
 
     request_maker = providers.Factory(RequestMaker)
     config_parser = providers.Factory(ConfigParser)
