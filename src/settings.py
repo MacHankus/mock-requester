@@ -1,10 +1,10 @@
 import os
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    API_PORT: int = 8080
+    API_PORT: int = 8000
 
     CONFIG_FILE_PATH: str = 'config.yaml'
 

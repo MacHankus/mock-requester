@@ -14,7 +14,6 @@ from starlette.responses import JSONResponse
 from starlette.responses import PlainTextResponse
 from loguru import logger
 
-from core.enums.config import RunningMode
 from definitions import PROJECT_NAME
 from ioc_container import Container
 from modules.adapters.api.mock_router import router
@@ -46,8 +45,6 @@ async def create_app() -> FastAPI:
             "modules.adapters.api.mock_router",
         ]
     )
-
-    container.config.from_pydantic(settings=settings)
 
     application.container = container
 
