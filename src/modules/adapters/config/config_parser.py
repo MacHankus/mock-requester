@@ -16,7 +16,7 @@ class ConfigParser(ConfigParserPort):
 
     def _parse(self, d: dict):
         try:
-            parsed = parse_obj_as(ConfigEntity, d)
+            parsed = ConfigEntity(**d)
             return parsed
         except ValidationError as e:
             logger.exception("Error while parsing file.")
