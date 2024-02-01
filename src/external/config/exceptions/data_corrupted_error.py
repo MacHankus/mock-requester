@@ -1,0 +1,2 @@
+class DataCorruptedError(Exception):
+    pass
