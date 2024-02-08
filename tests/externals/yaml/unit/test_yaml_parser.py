@@ -1,7 +1,7 @@
 from typing import Dict
 import pytest
 import yaml
-from modules.core.helpers.yaml_parser import parse_yaml_string
+from external.yaml.yaml_parser import parse_yaml_string
 
 
 @pytest.mark.parametrize(
