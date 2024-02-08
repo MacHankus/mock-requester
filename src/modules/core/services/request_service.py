@@ -7,13 +7,13 @@ from dependency_injector.wiring import inject
 from loguru import logger
 
 from modules.adapters.replacers.replacer import crawler
-from modules.core.entities.config_entity import ConfigTaskEntity
+from modules.core.entities.config_entity import ConfigInstructionEntity
 from modules.core.enums.config import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
 from modules.core.ports.config_parser_port import ConfigParserPort
+from modules.core.ports.config_repository_port import ConfigRepositoryPort
 from modules.core.ports.request_maker_port import RequestMakerPort
 from modules.core.ports.request_service_port import RequestServicePort
-from settings import settings
 
 RequestsToRun = TypeVar("RequestsToRun")
 
@@ -23,24 +23,18 @@ class RequestService(RequestServicePort):
     @inject
     def __init__(
         self,
-        config_parser: ConfigParserPort = Provide["config_parser"],
+        config_repository: ConfigRepositoryPort = Provide["config_repository"],
         request_maker: RequestMakerPort = Provide["request_maker"],
     ):
-        self.config_parser = config_parser
+        self.config_repository = config_repository
         self.request_maker = request_maker
 
     def make_request(self, path: str, body: Dict) -> None:
-        logger.info(f"Running request for config: {path}")
-        try:
-            self.config_parser.parse_config_file(settings.CONFIG_FILE_PATH)
-        except FileNotFoundError:
-            logger.exception(f"Config file path: {settings.CONFIG_FILE_PATH} not found.")
-            return
-        for key, config_task in self.config_parser.get_config().items():
-            if config_task.incoming.path == path:
-                self._run_request_for_config_task(
-                    config_task=config_task, config_name=key, body=body
-                )
+        logger.info(f"Running request for config name: {path}")
+        for key, instruction in self.config_repository.get_instructions(path=path):
+            self._run_request_for_config_task(
+                config_instruction=instruction, config_name=key, body=body
+            )
 
     def _requests_to_run(
         self, requests_to_run: RequestsToRun | List[RequestsToRun]
@@ -53,13 +47,13 @@ class RequestService(RequestServicePort):
         return requests_to_run
 
     def _run_request_for_config_task(
-        self, config_task: ConfigTaskEntity, config_name: str, body: Dict
+        self, config_instruction: ConfigInstructionEntity, config_name: str, body: Dict
     ) -> None:
         logger.info(
-            f"Config with name: {config_name} is configured for path: {config_task.incoming.path}"
+            f"Config with name: {config_name} is configured for path: {config_instruction.incoming.path}"
         )
 
-        requests_to_run = self._requests_to_run(config_task.outcoming)
+        requests_to_run = self._requests_to_run(config_instruction.outcoming)
 
         for request_to_run in requests_to_run:
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:

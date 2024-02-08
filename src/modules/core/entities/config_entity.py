@@ -2,7 +2,7 @@ from typing import Dict
 from typing import List
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, RootModel
+from pydantic import BaseModel, ConfigDict, Field, RootModel
 
 from modules.core.enums.config import IncomingRequestsTypeEnum, OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
@@ -20,18 +20,18 @@ class OutcomingHttpEntity(BaseModel):
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None
-    headers: Dict
+    headers: Dict = Field(default_factory=lambda: {})
 
     model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
-class ConfigTaskEntity(BaseModel):
+class ConfigInstructionEntity(BaseModel):
     incoming: IncomingEntity
     outcoming: List[OutcomingHttpEntity] | OutcomingHttpEntity
 
 
 class ConfigEntity(RootModel):
-    root: Dict[str, ConfigTaskEntity]
+    root: Dict[str, ConfigInstructionEntity]
 
     def items(self):
         return self.root.items()
