@@ -1,7 +1,8 @@
 from typing import Tuple
+
+import pytest
 from pydantic import BaseModel
 from pydantic_core import ValidationError
-import pytest
 
 
 class TestWhatModelCanValidate:

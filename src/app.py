@@ -4,21 +4,22 @@ import random
 import string
 import sys
 import time
+import uuid
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi import status
 from fastapi.exceptions import RequestValidationError
+from loguru import logger
 from starlette.responses import JSONResponse
 from starlette.responses import PlainTextResponse
-from loguru import logger
 
 from definitions import PROJECT_NAME
-from ioc_container import Container, wiring_modules
+from ioc_container import Container
+from ioc_container import wiring_modules
 from modules.adapters.api.mock_router import router
 from settings import settings
-import uuid
 
 APP_FROZEN = getattr(sys, "frozen", False)
 

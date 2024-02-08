@@ -1,6 +1,8 @@
 from typing import Dict
+
 import pytest
 import yaml
+
 from external.yaml.yaml_parser import parse_yaml_string
 
 

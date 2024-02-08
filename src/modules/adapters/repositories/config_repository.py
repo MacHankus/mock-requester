@@ -1,15 +1,14 @@
-from typing import Dict, List, Tuple
-from external.config.data_models.config import (
-    ConfigInstructionModel,
-    OutcomingHttpModel,
-)
-from modules.core.entities.config_entity import (
-    ConfigInstructionEntity,
-    IncomingEntity,
-    OutcomingHttpEntity,
-)
-from modules.core.ports.config_repository_port import ConfigRepositoryPort
+from typing import Dict
+from typing import List
+from typing import Tuple
+
 from external.config.config_data import config_data
+from external.config.data_models.config import ConfigInstructionModel
+from external.config.data_models.config import OutcomingHttpModel
+from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import IncomingEntity
+from modules.core.entities.config_entity import OutcomingHttpEntity
+from modules.core.ports.config_repository_port import ConfigRepositoryPort
 
 
 class ConfigRepository(ConfigRepositoryPort):

@@ -1,10 +1,13 @@
-import pytest
-import tempfile
 import os
-from ioc_container import Container, wiring_modules
+import tempfile
 
+import pytest
+
+from ioc_container import Container
+from ioc_container import wiring_modules
+from settings import settings
 from tests.helpers.random import get_random_string
-from settings import settings 
+
 
 @pytest.fixture
 def create_temp_file(request):

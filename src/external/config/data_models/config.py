@@ -1,6 +1,8 @@
 from typing import Dict
 from typing import List
-from pydantic import BaseModel, RootModel
+
+from pydantic import BaseModel
+from pydantic import RootModel
 
 from modules.core.enums.http import HttpMethodsEnum
 
