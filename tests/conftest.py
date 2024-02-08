@@ -37,7 +37,7 @@ def set_config_file_path_in_settings():
 
 
 @pytest.fixture(scope="session")
-def initialize_container():
+def ioc_container():
     container = Container()
     container.init_resources()
 
