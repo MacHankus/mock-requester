@@ -2,7 +2,7 @@ import json
 from typing import Callable
 from modules.core.entities.config_entity import (
     ConfigEntity,
-    ConfigTaskEntity,
+    ConfigInstructionEntity,
     IncomingEntity,
     OutcomingHttpEntity,
 )
@@ -12,6 +12,7 @@ from tests.api.api_client import client
 import yaml
 
 from pytest_httpx import HTTPXMock
+from external.config.config_data import load_config
 
 def test_should_return_204():
     # Act
@@ -35,7 +36,7 @@ def test_should_send_request_from_settings_with_success(
 
     config = ConfigEntity(
         {
-            "send_it_somewhere": ConfigTaskEntity(
+            "send_it_somewhere": ConfigInstructionEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
@@ -55,6 +56,7 @@ def test_should_send_request_from_settings_with_success(
     yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
+    load_config()
 
     # Act
     response = client.post(
@@ -76,7 +78,7 @@ def test_should_send_http_request_from_settings(
 
     config = ConfigEntity(
         {
-            "send_it_somewhere": ConfigTaskEntity(
+            "send_it_somewhere": ConfigInstructionEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
@@ -96,6 +98,7 @@ def test_should_send_http_request_from_settings(
     yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
+    load_config()
 
     httpx_mock.add_response(url=target_path)
     # Act
@@ -127,7 +130,7 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
 
     config = ConfigEntity(
         {
-            "send_it_somewhere": ConfigTaskEntity(
+            "send_it_somewhere": ConfigInstructionEntity(
                 incoming=IncomingEntity(
                     type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
                 ),
@@ -147,6 +150,7 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
     yaml_content = yaml.dump(config_dict)
     config_file_path = create_temp_file(yaml_content)
     set_config_file_path_in_settings(config_file_path)
+    load_config()
 
     httpx_mock.add_response(url=target_path)
     # Act

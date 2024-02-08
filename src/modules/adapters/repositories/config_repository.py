@@ -21,13 +21,13 @@ class ConfigRepository(ConfigRepositoryPort):
         if isinstance(instruction.outcoming, list):
             outcoming = [
                 OutcomingHttpEntity(
-                    type=x.outcoming.type,
-                    url=x.outcoming.url,
-                    method=x.outcoming.method,
-                    payload=x.outcoming.payload,
-                    headers=x.outcoming.headers,
+                    type=x.type,
+                    url=x.url,
+                    method=x.method,
+                    payload=x.payload,
+                    headers=x.headers,
                 )
-                for x in instruction.outcomingn
+                for x in instruction.outcoming
             ]
         if isinstance(instruction.outcoming, OutcomingHttpModel):
             outcoming = OutcomingHttpEntity(
