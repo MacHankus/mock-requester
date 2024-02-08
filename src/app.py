@@ -15,7 +15,7 @@ from starlette.responses import PlainTextResponse
 from loguru import logger
 
 from definitions import PROJECT_NAME
-from ioc_container import Container
+from ioc_container import Container, wiring_modules
 from modules.adapters.api.mock_router import router
 from settings import settings
 import uuid
@@ -39,12 +39,7 @@ async def create_app() -> FastAPI:
     container = Container()
     container.init_resources()
 
-    container.wire(
-        modules=[
-            "modules.core.services.request_service",
-            "modules.adapters.api.mock_router",
-        ]
-    )
+    container.wire(wiring_modules)
 
     application.container = container
 

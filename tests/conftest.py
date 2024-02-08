@@ -1,6 +1,7 @@
 import pytest
 import tempfile
 import os
+from ioc_container import Container, wiring_modules
 
 from tests.helpers.random import get_random_string
 from settings import settings 
@@ -34,3 +35,12 @@ def set_config_file_path_in_settings():
 
     settings.CONFIG_FILE_PATH = default_value
 
+
+@pytest.fixture(scope="session")
+def initialize_container():
+    container = Container()
+    container.init_resources()
+
+    container.wire(wiring_modules)
+
+    yield container
