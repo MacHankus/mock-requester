@@ -11,3 +11,4 @@ jobs:
         with:
           linter: ruff
           ruff-version: "0.2.1"
+          python-version: '3.11.6'

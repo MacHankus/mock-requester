@@ -10,5 +10,5 @@ jobs:
       - uses: advanced-security/python-lint-code-scanning-action@v1
         with:
           linter: mypy
-          ruff-version: "1.8.0"
+          mypy-version: "1.8.0"
           python-version: '3.11.6'
