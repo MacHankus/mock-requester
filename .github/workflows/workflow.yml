@@ -7,4 +7,4 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: "./.github/workflows/python-3.11.6/lint.yml"
+      - uses: ".github/workflows/python-3.11.6/lint.yml"
