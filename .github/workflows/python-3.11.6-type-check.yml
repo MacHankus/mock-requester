@@ -14,6 +14,6 @@ jobs:
       - name: Prepare environment for linting
         run: |
           pip install poetry && \
-          poetry install --only dev && \
+          poetry install && \
           poetry run mypy src tests
 
