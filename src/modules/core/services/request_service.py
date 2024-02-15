@@ -8,9 +8,8 @@ from loguru import logger
 
 from modules.adapters.replacers.replacer import crawler
 from modules.core.entities.config_entity import ConfigInstructionEntity
-from modules.core.enums.config import IncomingRequestsTypeEnum
+from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
-from modules.core.ports.config_parser_port import ConfigParserPort
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
 from modules.core.ports.request_maker_port import RequestMakerPort
 from modules.core.ports.request_service_port import RequestServicePort

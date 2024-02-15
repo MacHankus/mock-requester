@@ -7,8 +7,7 @@ from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import RootModel
 
-from modules.core.enums.config import IncomingRequestsTypeEnum
-from modules.core.enums.config import OutcomingTypeEnum
+from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
 
 
@@ -20,7 +19,7 @@ class IncomingEntity(BaseModel):
 
 
 class OutcomingHttpEntity(BaseModel):
-    type: Literal[OutcomingTypeEnum.HTTP.value]
+    type: Literal['http']
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None

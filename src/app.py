@@ -1,25 +1,18 @@
 import asyncio
-import json
-import random
-import string
 import sys
 import time
 import uuid
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi import Request
-from fastapi import status
 from fastapi.exceptions import RequestValidationError
 from loguru import logger
-from starlette.responses import JSONResponse
 from starlette.responses import PlainTextResponse
 
 from definitions import PROJECT_NAME
 from ioc_container import Container
 from ioc_container import wiring_modules
 from modules.adapters.api.mock_router import router
-from settings import settings
 
 APP_FROZEN = getattr(sys, "frozen", False)
 
@@ -35,14 +28,10 @@ async def create_app() -> FastAPI:
         openapi_url=None,
     )
 
-    application.logger = logger
-
     container = Container()
     container.init_resources()
 
     container.wire(wiring_modules)
-
-    application.container = container
 
     @application.exception_handler(RequestValidationError)
     async def validation_exception_handler(request, exc):
@@ -58,7 +47,7 @@ app: FastAPI = asyncio.run(create_app())
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     request_id = str(uuid.uuid4())
-    body = await request.body()
+    body = str(await request.body())
     log = (
         f"Start handling request ({request_id}) path=({request.url.path}) "
         f"method=({request.method}) body=({body})"
