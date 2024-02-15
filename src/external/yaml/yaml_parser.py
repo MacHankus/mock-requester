@@ -1,8 +1,10 @@
 
 from typing import Dict
+
 import yaml
 
 from .exceptions.parsing_error import ParsingError
+
 
 def parse_yaml_string(content: str) -> Dict:
     try:

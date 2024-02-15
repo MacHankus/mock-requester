@@ -1,13 +1,12 @@
-from modules.core.entities.config_entity import (
-    ConfigInstructionEntity,
-    IncomingEntity,
-    OutcomingHttpEntity,
-)
-from modules.core.enums.config import IncomingRequestsTypeEnum, OutcomingTypeEnum
-from modules.core.enums.http import HttpMethodsEnum
-from modules.core.services.request_service import RequestService
 from unittest.mock import Mock
 
+from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import IncomingEntity
+from modules.core.entities.config_entity import OutcomingHttpEntity
+from modules.core.enums.config_enum import IncomingRequestsTypeEnum
+from modules.core.enums.config_enum import OutcomingTypeEnum
+from modules.core.enums.http import HttpMethodsEnum
+from modules.core.services.request_service import RequestService
 from tests.helpers.random import get_random_string
 
 

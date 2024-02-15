@@ -1,18 +1,19 @@
 import json
 from typing import Callable
-from modules.core.entities.config_entity import (
-    ConfigEntity,
-    ConfigInstructionEntity,
-    IncomingEntity,
-    OutcomingHttpEntity,
-)
-from modules.core.enums.config import IncomingRequestsTypeEnum, OutcomingTypeEnum
+
+import yaml
+from pytest_httpx import HTTPXMock
+
+from external.config.config_data import load_config
+from modules.core.entities.config_entity import ConfigEntity
+from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import IncomingEntity
+from modules.core.entities.config_entity import OutcomingHttpEntity
+from modules.core.enums.config_enum import IncomingRequestsTypeEnum
+from modules.core.enums.config_enum import OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
 from tests.api.api_client import client
-import yaml
 
-from pytest_httpx import HTTPXMock
-from external.config.config_data import load_config
 
 def test_should_return_204():
     # Act

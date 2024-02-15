@@ -1,6 +1,6 @@
 from typing import Callable
-from external.config.config_data import load_config
 
+from external.config.config_data import load_config
 from modules.adapters.repositories.config_repository import ConfigRepository
 
 

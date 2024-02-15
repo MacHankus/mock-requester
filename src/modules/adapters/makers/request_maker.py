@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Callable, Dict
 
 import httpx
 from loguru import logger
@@ -25,21 +25,34 @@ class RequestMaker(RequestMakerPort):
         payload: Dict | None = None,
         headers: Dict | None = None,
     ) -> None:
+        request_method: Callable | None = None
+        request_params: Dict | None = None
         if method == HttpMethodsEnum.POST:
             request_method = self.client.post
+            request_params = dict(
+                url=url,
+                headers=headers,
+            )
         elif method == HttpMethodsEnum.GET:
             request_method = self.client.get
-        elif method == HttpMethodsEnum.PUT:
-            request_method = self.client.put
-        logger.info(
-            f"Parameters in request url={url}, method={method}, payload={payload}, headers={headers}"
-        )
-        try:
-            response = request_method(
+            request_params = dict(
                 url=url,
                 json=payload,
                 headers=headers,
             )
+        elif method == HttpMethodsEnum.PUT:
+            request_method = self.client.put
+            request_params = dict(
+                url=url,
+                json=payload,
+                headers=headers,
+            )
+
+        logger.info(
+            f"Parameters in request url={url}, method={method}, payload={payload}, headers={headers}"
+        )
+        try:
+            response = request_method(**request_params)
         except httpx.RequestError:
             logger.exception("Exception during request")
             raise ServiceUnavailableError()

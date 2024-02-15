@@ -2,6 +2,7 @@ import random
 import uuid
 from decimal import Decimal
 
+
 def get_random_string(length: int = 30) -> str:
     return f"{uuid.uuid4().hex[0:length]}"
 

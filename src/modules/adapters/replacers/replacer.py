@@ -12,6 +12,8 @@ def get_val_from_body(path: str, body: Dict):
             ref = body.get(level, None)
             first = False
         else:
+            if ref is None:
+                return None
             ref = ref.get(level, None)
         if ref is None:
             return None

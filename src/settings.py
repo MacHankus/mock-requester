@@ -6,10 +6,11 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     API_PORT: int = 8000
 
-    CONFIG_FILE_PATH: str = 'config.yaml'
+    CONFIG_FILE_PATH: str = "config.yaml"
+
 
 settings = (
-    Settings(_env_file=".env", _env_file_encoding="utf-8")
+    Settings(_env_file=".env", _env_file_encoding="utf-8")  # type: ignore[call-arg]
     if os.path.exists(".env")
     else Settings()
 )

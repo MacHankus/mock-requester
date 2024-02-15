@@ -1,5 +1,7 @@
-from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from abc import ABC
+from abc import abstractmethod
+from typing import List
+from typing import Tuple
 
 from modules.core.entities.config_entity import ConfigInstructionEntity
 
