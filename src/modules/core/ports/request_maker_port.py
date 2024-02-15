@@ -13,5 +13,6 @@ class RequestMakerPort(ABC):
         method: HttpMethodsEnum,
         json: Dict | None = None,
         headers: Dict | None = None,
+        params: Dict | None = None,
     ) -> None:
         pass

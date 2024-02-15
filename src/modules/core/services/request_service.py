@@ -17,7 +17,6 @@ from modules.core.ports.request_service_port import RequestServicePort
 RequestsToRun = TypeVar("RequestsToRun")
 
 
-
 class RequestService(RequestServicePort):
     @inject
     def __init__(
@@ -54,10 +53,11 @@ class RequestService(RequestServicePort):
 
         requests_to_run = self._requests_to_run(config_instruction.outcoming)
 
-        for request_to_run in requests_to_run:
+        for idx, request_to_run in enumerate(requests_to_run):
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
                 crawler(request_to_run.payload, body)
                 try:
+                    logger.info(f"Request[{idx}] is starting...")
                     self.request_maker.make(
                         url=request_to_run.url,
                         method=request_to_run.method,
