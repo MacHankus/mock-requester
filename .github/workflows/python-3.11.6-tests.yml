@@ -15,6 +15,6 @@ jobs:
         run: |
           pip install poetry && \
           poetry install && \
-          PYTHONPATH=src;tests && \
+          export PYTHONPATH=src:tests && \
           poetry run pytest tests -vv tests
 
