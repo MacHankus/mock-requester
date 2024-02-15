@@ -7,14 +7,6 @@ jobs:
   python-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11.6' 
-      - name: Prepare environment for linting
-        run: |
-          pip install poetry && \
-          poetry install --only dev
       - uses: advanced-security/python-lint-code-scanning-action@v1
         with:
           linter: ruff
