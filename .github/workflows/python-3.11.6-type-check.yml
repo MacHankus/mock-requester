@@ -11,4 +11,4 @@ jobs:
         with:
           linter: mypy
           mypy-version: "1.8.0"
-          python-version: '3.11.6'
+          python-version: '3.11'
