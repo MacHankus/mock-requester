@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Any, Tuple
 
 import pytest
 from pydantic import BaseModel
@@ -7,7 +7,7 @@ from pydantic_core import ValidationError
 
 class TestWhatModelCanValidate:
     @staticmethod
-    def _prepare_model() -> Tuple[BaseModel, BaseModel]:
+    def _prepare_model() -> Tuple[Any, Any]:
         class InnerModel(BaseModel):
             a: str
             b: int

@@ -43,7 +43,7 @@ def test_should_send_request_from_settings_with_success(
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value,
+                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -85,7 +85,7 @@ def test_should_send_http_request_from_settings(
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value,
+                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -137,7 +137,7 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
                 ),
                 outcoming=[
                     OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value,
+                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
