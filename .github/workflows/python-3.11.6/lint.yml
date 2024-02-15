@@ -12,8 +12,7 @@ jobs:
         run: |
           pip install poetry && \
           poetry install --group dev && 
-      - use: advanced-security/python-lint-code-scanning-action@v1
+      - uses: advanced-security/python-lint-code-scanning-action@v1
         with:
           linter: ruff
           ruff-version: "0.2.1"
-          target: ./src ./tests
