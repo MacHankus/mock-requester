@@ -11,7 +11,7 @@ jobs:
       - name: Prepare environment for linting
         run: |
           pip install poetry && \
-          poetry install --group dev && 
+          poetry install --group dev
       - uses: advanced-security/python-lint-code-scanning-action@v1
         with:
           linter: ruff
