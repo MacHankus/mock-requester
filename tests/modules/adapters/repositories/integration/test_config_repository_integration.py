@@ -121,4 +121,5 @@ class TestConfigValules:
 
         assert instruction_name == instruction_name
         assert not isinstance(instruction.outcoming, list)
+        assert instruction.outcoming.params
         assert instruction.outcoming.params["param1"] == param1
