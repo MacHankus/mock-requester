@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  python-type-check:
+  python-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,5 +15,6 @@ jobs:
         run: |
           pip install poetry && \
           poetry install && \
-          poetry run mypy src tests
+          export PYTHONPATH=src:tests && \
+          poetry run pytest tests -vv tests
 

@@ -9,3 +9,6 @@ jobs:
   type-check:
     uses: ./.github/workflows/python-3.11.6-type-check.yml
     needs: lint
+  tests:
+    uses: ./.github/workflows/python-3.11.6-tests.yml
+    needs: type-check
