@@ -63,6 +63,7 @@ class RequestService(RequestServicePort):
                         method=request_to_run.method,
                         payload=request_to_run.payload,
                         headers=request_to_run.headers,
+                        params=request_to_run.params,
                     )
                 except ServiceUnavailableError:
                     logger.info(f"Error while doing request ({request_to_run})")

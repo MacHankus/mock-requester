@@ -118,6 +118,53 @@ def test_should_send_http_request_from_settings(
     assert content_json == payload
 
 
+def test_should_send_http_request_from_settings_wiht_correct_query_params(
+    set_config_file_path_in_settings: Callable, create_temp_file: Callable, httpx_mock: HTTPXMock
+):
+    # Arrange
+    incoming_path = "incoming/path"
+    target_path = "http://target/endpoint"
+    target_rest_of_the_path = "?a=1"
+    target_method = HttpMethodsEnum.GET
+    params = {"a": 1}
+
+    config = ConfigEntity(
+        {
+            "send_it_somewhere": ConfigInstructionEntity(
+                incoming=IncomingEntity(
+                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+                ),
+                outcoming=[
+                    OutcomingHttpEntity(
+                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
+                        url=target_path,
+                        method=target_method,
+                        params=params,
+                    )
+                ],
+            )
+        }
+    )
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
+    config_file_path = create_temp_file(yaml_content)
+    set_config_file_path_in_settings(config_file_path)
+    load_config()
+
+    httpx_mock.add_response(url=target_path + target_rest_of_the_path)
+    # Act
+    response = client.post(
+        url=incoming_path,
+    )
+
+    # Assert
+    assert response.status_code == 204
+
+    request = httpx_mock.get_request()
+    assert request
+    assert request.url == target_path + target_rest_of_the_path
+
+
 def test_should_send_http_request_from_settings_with_replaced_placeholders_from_body(
     set_config_file_path_in_settings: Callable, create_temp_file: Callable, httpx_mock: HTTPXMock
 ):

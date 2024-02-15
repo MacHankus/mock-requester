@@ -35,7 +35,7 @@ class RequestMaker(RequestMakerPort):
             request_method = self.client.post
         elif method == HttpMethodsEnum.GET:
             request_method = self.client.get
-            del request_params["payload"]
+            del request_params["json"]
         elif method == HttpMethodsEnum.PUT:
             request_method = self.client.put
 

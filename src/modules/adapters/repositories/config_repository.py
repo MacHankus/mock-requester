@@ -24,6 +24,7 @@ class ConfigRepository(ConfigRepositoryPort):
                     method=x.method,
                     payload=x.payload,
                     headers=x.headers,
+                    params=x.params
                 )
                 for x in instruction.outcoming
             ]
@@ -34,6 +35,7 @@ class ConfigRepository(ConfigRepositoryPort):
                 method=instruction.outcoming.method,
                 payload=instruction.outcoming.payload,
                 headers=instruction.outcoming.headers,
+                params=instruction.outcoming.params
             )
         if outcoming is None:
             raise ValueError(

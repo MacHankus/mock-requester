@@ -23,7 +23,8 @@ class OutcomingHttpEntity(BaseModel):
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None
-    headers: Dict = Field(default_factory=lambda: {})
+    headers: Dict | None = None
+    params: Dict | None = None
 
     model_config = ConfigDict(use_enum_values=True, validate_default=True)
 

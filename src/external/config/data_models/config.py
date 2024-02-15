@@ -17,7 +17,8 @@ class OutcomingHttpModel(BaseModel):
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None
-    headers: Dict
+    headers: Dict | None = None,
+    params: Dict | None = None
 
 
 class ConfigInstructionModel(BaseModel):
