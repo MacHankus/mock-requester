@@ -8,3 +8,4 @@ jobs:
     uses: ./.github/workflows/python-3.11.6-lint.yml
   type-check:
     uses: ./.github/workflows/python-3.11.6-type-check.yml
+    needs: lint
