@@ -5,4 +5,4 @@ on:
     branches: [ "master" ]
 jobs:
   lint:
-    uses: ./.github/workflows/python-3.11.6/lint.yml
+    uses: ./.github/workflows/python-3.11.6-lint.yml
