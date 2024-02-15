@@ -73,4 +73,5 @@ def test_should_return_instruction_when_correct_data_in_repository_with_proper_v
     instruction_name, instruction = instructions[0]
  
     assert instruction_name == instruction_name 
+    assert not isinstance(instruction.outcoming, list)
     assert instruction.outcoming.url == outcoming_url 

@@ -31,7 +31,7 @@ def create_temp_file(request):
 def set_config_file_path_in_settings():
     default_value = settings.CONFIG_FILE_PATH
 
-    def set_value(value: bool):
+    def set_value(value: str):
         settings.CONFIG_FILE_PATH = value
 
     yield set_value
