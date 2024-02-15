@@ -31,13 +31,13 @@ class RequestMaker(RequestMakerPort):
             request_method = self.client.post
             request_params = dict(
                 url=url,
+                json=payload,
                 headers=headers,
             )
         elif method == HttpMethodsEnum.GET:
             request_method = self.client.get
             request_params = dict(
                 url=url,
-                json=payload,
                 headers=headers,
             )
         elif method == HttpMethodsEnum.PUT:
