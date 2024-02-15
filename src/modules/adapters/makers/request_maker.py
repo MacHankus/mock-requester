@@ -15,7 +15,7 @@ class RequestMaker(RequestMakerPort):
     def _log_before_request(self, request: httpx.Request) -> None:
         logger.debug(
             f"Sending request to {str(request.url)} with body "
-            f"({str(request.content)}) and headers ({str(request.headers)})"
+            f"({str(request.content)}), headers ({str(request.headers)})"
         )
 
     def make(
@@ -24,32 +24,23 @@ class RequestMaker(RequestMakerPort):
         method: HttpMethodsEnum,
         payload: Dict | None = None,
         headers: Dict | None = None,
+        params: Dict | None = None,
     ) -> None:
+        logger.info(f"Got request for url: ({url})")
         request_method: Callable | None = None
-        request_params: Dict | None = None
+        request_params: Dict = dict(
+            url=url, json=payload, headers=headers, params=params
+        )
         if method == HttpMethodsEnum.POST:
             request_method = self.client.post
-            request_params = dict(
-                url=url,
-                json=payload,
-                headers=headers,
-            )
         elif method == HttpMethodsEnum.GET:
             request_method = self.client.get
-            request_params = dict(
-                url=url,
-                headers=headers,
-            )
+            del request_params["payload"]
         elif method == HttpMethodsEnum.PUT:
             request_method = self.client.put
-            request_params = dict(
-                url=url,
-                json=payload,
-                headers=headers,
-            )
 
         logger.info(
-            f"Parameters in request url={url}, method={method}, payload={payload}, headers={headers}"
+            f"Parameters in request method={method}, payload={payload}, headers={headers}, params={params}"
         )
         try:
             response = request_method(**request_params)
@@ -57,6 +48,5 @@ class RequestMaker(RequestMakerPort):
             logger.exception("Exception during request")
             raise ServiceUnavailableError()
 
-        logger.info("-------------------------------")
         logger.info(f"Target responded with: {response}")
         return None
