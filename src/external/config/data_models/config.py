@@ -1,11 +1,8 @@
 from typing import Dict
 from typing import List
-from typing import TypeVar
 
 from pydantic import BaseModel
 from pydantic import RootModel
-
-InstructionNameType = TypeVar("InstructionNameType", bound=str)
 
 
 class IncomingModel(BaseModel):
@@ -27,7 +24,7 @@ class ConfigInstructionModel(BaseModel):
 
 
 class ConfigModel(RootModel):
-    root: Dict[InstructionNameType, ConfigInstructionModel]
+    root: Dict[str, ConfigInstructionModel]
 
     def items(self):
         return self.root.items()
