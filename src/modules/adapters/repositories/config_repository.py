@@ -11,30 +11,30 @@ from modules.core.ports.config_repository_port import ConfigRepositoryPort
 
 
 class ConfigRepository(ConfigRepositoryPort):
-    @staticmethod
+
+    def _create_outcoming_entity_from_model(
+        self, model: OutcomingHttpModel
+    ) -> OutcomingHttpEntity:
+        return OutcomingHttpEntity(
+            type=model.type,  # type: ignore[arg-type]
+            url=model.url,
+            method=model.method,
+            payload=model.payload,
+            headers=model.headers,
+        )
+
     def _model_to_entity(
+        self,
         instruction: ConfigInstructionModel,
     ) -> ConfigInstructionEntity:
         outcoming: List[OutcomingHttpEntity] | OutcomingHttpEntity | None = None
         if isinstance(instruction.outcoming, list):
             outcoming = [
-                OutcomingHttpEntity(
-                    type=x.type,  # type: ignore[arg-type]
-                    url=x.url,
-                    method=x.method,
-                    payload=x.payload,
-                    headers=x.headers,
-                )
+                self._create_outcoming_entity_from_model(x)
                 for x in instruction.outcoming
             ]
         if isinstance(instruction.outcoming, OutcomingHttpModel):
-            outcoming = OutcomingHttpEntity(
-                type=instruction.outcoming.type,  # type: ignore[arg-type]
-                url=instruction.outcoming.url,
-                method=instruction.outcoming.method,
-                payload=instruction.outcoming.payload,
-                headers=instruction.outcoming.headers,
-            )
+            outcoming = self._create_outcoming_entity_from_model(instruction.outcoming)
         if outcoming is None:
             raise ValueError(
                 "Outcoming section for instruction {instruction} is not valid"

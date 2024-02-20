@@ -6,3 +6,5 @@ class HttpMethodsEnum(StrEnum):
     POST = auto()
     GET = auto()
     PUT = auto()
+    DELETE = auto()
+    PATCH = auto()
