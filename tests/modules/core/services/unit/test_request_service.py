@@ -1,8 +1,8 @@
 from unittest.mock import Mock
 
 from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import HttpSideEffectEntity
 from modules.core.entities.config_entity import IncomingEntity
-from modules.core.entities.config_entity import OutcomingHttpEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.enums.config_enum import OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
@@ -48,7 +48,7 @@ def test_should_call_request_maker_once_when_instruction_has_one_outcoming_objec
             "some-instruction-name",
             ConfigInstructionEntity(
                 incoming=IncomingEntity(type=IncomingRequestsTypeEnum.HTTP, path=path),
-                outcoming=OutcomingHttpEntity(
+                side_effects=HttpSideEffectEntity(
                     type=OutcomingTypeEnum.HTTP.value,
                     url=get_random_string(),
                     method=HttpMethodsEnum.GET,
@@ -83,13 +83,13 @@ def test_should_call_request_maker_twice_when_instruction_has_two_outcoming_obje
             "some-instruction-name",
             ConfigInstructionEntity(
                 incoming=IncomingEntity(type=IncomingRequestsTypeEnum.HTTP, path=path),
-                outcoming=[
-                    OutcomingHttpEntity(
+                side_effects=[
+                    HttpSideEffectEntity(
                         type=OutcomingTypeEnum.HTTP.value,
                         url=get_random_string(),
                         method=HttpMethodsEnum.GET,
                     ),
-                    OutcomingHttpEntity(
+                    HttpSideEffectEntity(
                         type=OutcomingTypeEnum.HTTP.value,
                         url=get_random_string(),
                         method=HttpMethodsEnum.GET,

@@ -15,17 +15,17 @@ class IncomingModel(BaseModel):
     path: str
 
 
-class OutcomingHttpModel(BaseModel):
+class HttpSideEffectModel(BaseModel):
     type: str
     url: str
-    method: HttpMethodsEnum
+    method: str
     payload: Dict | None = None
-    headers: Dict
+    headers: Dict | None = None
 
 
 class ConfigInstructionModel(BaseModel):
     incoming: IncomingModel
-    outcoming: List[OutcomingHttpModel] | OutcomingHttpModel
+    side_effects: List[HttpSideEffectModel] | HttpSideEffectModel
 
 
 class ConfigModel(RootModel):

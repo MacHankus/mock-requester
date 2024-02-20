@@ -18,7 +18,7 @@ class IncomingEntity(BaseModel):
     model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
-class OutcomingHttpEntity(BaseModel):
+class HttpSideEffectEntity(BaseModel):
     type: Literal['http']
     url: str
     method: HttpMethodsEnum
@@ -30,7 +30,7 @@ class OutcomingHttpEntity(BaseModel):
 
 class ConfigInstructionEntity(BaseModel):
     incoming: IncomingEntity
-    outcoming: List[OutcomingHttpEntity] | OutcomingHttpEntity
+    side_effects: List[HttpSideEffectEntity] | HttpSideEffectEntity
 
 
 class ConfigEntity(RootModel):

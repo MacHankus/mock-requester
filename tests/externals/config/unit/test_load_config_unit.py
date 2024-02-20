@@ -25,7 +25,7 @@ some-instruction:
     incoming: 
         type: http
         path: "endpoint/path/example"
-    outcoming:
+    side_effects:
         type: http
         url: "http://example-host/"
         method: {en.value}
@@ -34,7 +34,7 @@ some-instruction:
         ],
         indirect=True,
     )
-    def test_should_load_config_with_different_http_outcoming_methods(
+    def test_should_load_config_with_different_http_side_effects_methods(
         self, mock_open_and_yaml_parser: str
     ):
         # Act

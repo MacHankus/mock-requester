@@ -5,10 +5,10 @@ import yaml
 from pytest_httpx import HTTPXMock
 
 from external.config.config_data import load_config
-from modules.core.entities.config_entity import ConfigEntity
-from modules.core.entities.config_entity import ConfigInstructionEntity
-from modules.core.entities.config_entity import IncomingEntity
-from modules.core.entities.config_entity import OutcomingHttpEntity
+from external.config.data_models.config import ConfigInstructionModel
+from external.config.data_models.config import ConfigModel
+from external.config.data_models.config import HttpSideEffectModel
+from external.config.data_models.config import IncomingModel
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.enums.config_enum import OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
@@ -31,18 +31,18 @@ def test_should_send_request_from_settings_with_success(
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
+    target_method = HttpMethodsEnum.POST.value
     payload = {"a": 1}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
+                side_effects=[
+                    HttpSideEffectModel(
                         type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
@@ -73,18 +73,18 @@ def test_should_send_http_request_from_settings(
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
+    target_method = HttpMethodsEnum.POST.value
     payload = {"a": 1}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
+                side_effects=[
+                    HttpSideEffectModel(
                         type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
@@ -113,7 +113,7 @@ def test_should_send_http_request_from_settings(
     request = httpx_mock.get_request()
     assert request
     assert request.url == target_path
-    assert request.method.upper() == target_method.value.upper()
+    assert request.method.upper() == target_method.upper()
     content_json = json.loads(request.content)
     assert content_json == payload
 
@@ -124,19 +124,19 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
+    target_method = HttpMethodsEnum.POST.value
     payload = {"a": "${main.target}"}
     body = {"main":{"target": "TEST"}}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
+                side_effects=[
+                    HttpSideEffectModel(
                         type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,

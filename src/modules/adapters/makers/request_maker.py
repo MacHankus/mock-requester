@@ -1,4 +1,5 @@
-from typing import Callable, Dict
+from typing import Callable
+from typing import Dict
 
 import httpx
 from loguru import logger
