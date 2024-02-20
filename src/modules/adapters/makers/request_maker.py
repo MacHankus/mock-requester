@@ -4,8 +4,8 @@ from typing import Dict
 
 import httpx
 from loguru import logger
-from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 
+from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.http import HttpMethodsEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
 from modules.core.ports.request_maker_port import RequestMakerPort

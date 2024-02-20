@@ -6,7 +6,8 @@ from dependency_injector.wiring import Provide
 from dependency_injector.wiring import inject
 from loguru import logger
 
-from modules.adapters.replacers.replacer import replace_placeholder, replacer
+from modules.adapters.replacers.replacer import replace_placeholder
+from modules.adapters.replacers.replacer import replacer
 from modules.core.entities.config_entity import ConfigInstructionEntity
 from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
