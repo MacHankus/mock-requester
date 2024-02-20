@@ -41,12 +41,16 @@ class RequestMaker(RequestMakerPort):
             del request_params["payload"]
         elif method == HttpMethodsEnum.PUT:
             request_method = self.client.put
+        elif method == HttpMethodsEnum.DELETE:
+            request_method = self.client.delete
+        elif method == HttpMethodsEnum.PATCH:
+            request_method = self.client.patch
 
         logger.info(
             f"Parameters in request method={method}, payload={payload}, headers={headers}, params={params}"
         )
         try:
-            response = request_method(**request_params)
+            response: httpx.Response = request_method(**request_params)
 
         except httpx.RequestError:
             logger.exception("Exception during request")

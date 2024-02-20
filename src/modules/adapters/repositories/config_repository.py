@@ -7,6 +7,7 @@ from external.config.data_models.config import HttpSideEffectModel
 from modules.core.entities.config_entity import ConfigInstructionEntity
 from modules.core.entities.config_entity import HttpSideEffectEntity
 from modules.core.entities.config_entity import IncomingEntity
+from modules.core.enums.http import HttpMethodsEnum
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
 
 
@@ -18,7 +19,7 @@ class ConfigRepository(ConfigRepositoryPort):
         return HttpSideEffectEntity(
             type=model.type,  # type: ignore[arg-type]
             url=model.url,
-            method=model.method,
+            method=HttpMethodsEnum(model.method),
             payload=model.payload,
             headers=model.headers,
         )

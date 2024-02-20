@@ -29,7 +29,7 @@ def test_should_get_json_from_response(httpx_mock: HTTPXMock):
     json = {"test_param": 1}
     method = HttpMethodsEnum.POST
 
-    httpx_mock.add_response(status_code=200)
+    httpx_mock.add_response(status_code=200, json=json)
     # Act
     response = maker.make(url=url, method=method, payload=json)
 
