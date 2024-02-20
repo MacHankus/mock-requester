@@ -37,7 +37,7 @@ def test_should_get_json_from_response(httpx_mock: HTTPXMock):
     assert response.payload == json
 
 
-def test_should_get_json_from_response(httpx_mock: HTTPXMock):
+def test_should_get_cookies_from_response(httpx_mock: HTTPXMock):
     # Arrange
     maker = RequestMaker()
     url = "http://test-endpoint"
