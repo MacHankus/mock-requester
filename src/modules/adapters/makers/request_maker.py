@@ -1,7 +1,6 @@
 from json import JSONDecodeError
 from typing import Callable
 from typing import Dict
-from urllib.parse import parse_qs, urlparse
 
 import httpx
 from loguru import logger

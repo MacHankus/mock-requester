@@ -5,7 +5,6 @@ from typing import TypeVar
 from pydantic import BaseModel
 from pydantic import RootModel
 
-from modules.core.enums.http import HttpMethodsEnum
 
 InstructionNameType = TypeVar("InstructionNameType", bound=str)
 

@@ -4,7 +4,6 @@ from typing import Literal
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
-from pydantic import Field
 from pydantic import RootModel
 
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum

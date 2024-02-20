@@ -45,7 +45,7 @@ class TestLoadConfigWithIncorrectConfigs:
     @pytest.mark.parametrize(
         "mock_open_and_yaml_parser",
         [
-            f"""
+            """
 some-instruction:
     incorrect:
         value : 1
