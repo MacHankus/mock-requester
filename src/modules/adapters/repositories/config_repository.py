@@ -3,39 +3,40 @@ from typing import Tuple
 
 from external.config.config_data import config_data
 from external.config.data_models.config import ConfigInstructionModel
-from external.config.data_models.config import OutcomingHttpModel
+from external.config.data_models.config import HttpSideEffectModel
 from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import HttpSideEffectEntity
 from modules.core.entities.config_entity import IncomingEntity
-from modules.core.entities.config_entity import OutcomingHttpEntity
+from modules.core.enums.http import HttpMethodsEnum
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
 
 
 class ConfigRepository(ConfigRepositoryPort):
-    @staticmethod
+
+    def _create_outcoming_entity_from_model(
+        self, model: HttpSideEffectModel
+    ) -> HttpSideEffectEntity:
+        return HttpSideEffectEntity(
+            type=model.type,  # type: ignore[arg-type]
+            url=model.url,
+            method=HttpMethodsEnum(model.method),
+            payload=model.payload,
+            headers=model.headers,
+        )
+
     def _model_to_entity(
+        self,
         instruction: ConfigInstructionModel,
     ) -> ConfigInstructionEntity:
-        outcoming: List[OutcomingHttpEntity] | OutcomingHttpEntity | None = None
-        if isinstance(instruction.outcoming, list):
-            outcoming = [
-                OutcomingHttpEntity(
-                    type=x.type,  # type: ignore[arg-type]
-                    url=x.url,
-                    method=x.method,
-                    payload=x.payload,
-                    headers=x.headers,
-                )
-                for x in instruction.outcoming
+        side_effects: List[HttpSideEffectEntity] | HttpSideEffectEntity | None = None
+        if isinstance(instruction.side_effects, list):
+            side_effects = [
+                self._create_outcoming_entity_from_model(x)
+                for x in instruction.side_effects
             ]
-        if isinstance(instruction.outcoming, OutcomingHttpModel):
-            outcoming = OutcomingHttpEntity(
-                type=instruction.outcoming.type,  # type: ignore[arg-type]
-                url=instruction.outcoming.url,
-                method=instruction.outcoming.method,
-                payload=instruction.outcoming.payload,
-                headers=instruction.outcoming.headers,
-            )
-        if outcoming is None:
+        if isinstance(instruction.side_effects, HttpSideEffectModel):
+            side_effects = self._create_outcoming_entity_from_model(instruction.side_effects)
+        if side_effects is None:
             raise ValueError(
                 "Outcoming section for instruction {instruction} is not valid"
             )
@@ -44,7 +45,7 @@ class ConfigRepository(ConfigRepositoryPort):
                 type=instruction.incoming.type,  # type: ignore[arg-type]
                 path=instruction.incoming.path,
             ),
-            outcoming=outcoming,
+            side_effects=side_effects,
         )
 
     def get_instructions(self, path: str) -> List[Tuple[str, ConfigInstructionEntity]]:

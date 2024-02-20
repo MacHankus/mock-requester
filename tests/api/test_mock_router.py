@@ -5,10 +5,10 @@ import yaml
 from pytest_httpx import HTTPXMock
 
 from external.config.config_data import load_config
-from modules.core.entities.config_entity import ConfigEntity
-from modules.core.entities.config_entity import ConfigInstructionEntity
-from modules.core.entities.config_entity import IncomingEntity
-from modules.core.entities.config_entity import OutcomingHttpEntity
+from external.config.data_models.config import ConfigInstructionModel
+from external.config.data_models.config import ConfigModel
+from external.config.data_models.config import HttpSideEffectModel
+from external.config.data_models.config import IncomingModel
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.enums.config_enum import OutcomingTypeEnum
 from modules.core.enums.http import HttpMethodsEnum
@@ -31,19 +31,19 @@ def test_should_send_request_from_settings_with_success(
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
+    target_method = HttpMethodsEnum.POST.value
     payload = {"a": 1}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
+                side_effects=[
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -67,25 +67,28 @@ def test_should_send_request_from_settings_with_success(
     # Assert
     assert response.status_code == 204
 
+
 def test_should_send_http_request_from_settings(
-    set_config_file_path_in_settings: Callable, create_temp_file: Callable, httpx_mock: HTTPXMock
+    set_config_file_path_in_settings: Callable,
+    create_temp_file: Callable,
+    httpx_mock: HTTPXMock,
 ):
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
+    target_method = HttpMethodsEnum.POST.value
     payload = {"a": 1}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
+                side_effects=[
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -113,31 +116,33 @@ def test_should_send_http_request_from_settings(
     request = httpx_mock.get_request()
     assert request
     assert request.url == target_path
-    assert request.method.upper() == target_method.value.upper()
+    assert request.method.upper() == target_method.upper()
     content_json = json.loads(request.content)
     assert content_json == payload
 
 
 def test_should_send_http_request_from_settings_with_replaced_placeholders_from_body(
-    set_config_file_path_in_settings: Callable, create_temp_file: Callable, httpx_mock: HTTPXMock
+    set_config_file_path_in_settings: Callable,
+    create_temp_file: Callable,
+    httpx_mock: HTTPXMock,
 ):
     # Arrange
     incoming_path = "incoming/path"
     target_path = "http://target/endpoint"
-    target_method = HttpMethodsEnum.POST
-    payload = {"a": "${main.target}"}
-    body = {"main":{"target": "TEST"}}
+    target_method = HttpMethodsEnum.POST.value
+    payload = {"a": "${BODY.main.target}"}
+    body = {"main": {"target": "TEST"}}
     headers = {"Content-Type": "application/json"}
 
-    config = ConfigEntity(
+    config = ConfigModel(
         {
-            "send_it_somewhere": ConfigInstructionEntity(
-                incoming=IncomingEntity(
-                    type=IncomingRequestsTypeEnum.HTTP, path=incoming_path
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
                 ),
-                outcoming=[
-                    OutcomingHttpEntity(
-                        type=OutcomingTypeEnum.HTTP.value, # type: ignore[arg-type]
+                side_effects=[
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
                         url=target_path,
                         method=target_method,
                         payload=payload,
@@ -155,9 +160,7 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
 
     httpx_mock.add_response(url=target_path)
     # Act
-    response = client.post(
-        url=incoming_path, json=body
-    )
+    response = client.post(url=incoming_path, json=body)
 
     # Assert
     assert response.status_code == 204
@@ -166,3 +169,113 @@ def test_should_send_http_request_from_settings_with_replaced_placeholders_from_
     assert request
     content_json = json.loads(request.content)
     assert content_json["a"] == body["main"]["target"]
+
+
+def test_should_send_http_request_from_settings_with_replaced_placeholders_but_if_placeholder_doesnt_match_then_leave_as_is(
+    set_config_file_path_in_settings: Callable,
+    create_temp_file: Callable,
+    httpx_mock: HTTPXMock,
+):
+    # Arrange
+    incoming_path = "incoming/path"
+    target_path = "http://target/endpoint"
+    target_method = HttpMethodsEnum.POST.value
+    payload = {
+        "a": "${TEST.main.target}"  # TEST - is wrong value thats why it won't match
+    }
+    body = {"main": {"target": "TEST"}}
+    headers = {"Content-Type": "application/json"}
+
+    config = ConfigModel(
+        {
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
+                ),
+                side_effects=[
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
+                        url=target_path,
+                        method=target_method,
+                        payload=payload,
+                        headers=headers,
+                    )
+                ],
+            )
+        }
+    )
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
+    config_file_path = create_temp_file(yaml_content)
+    set_config_file_path_in_settings(config_file_path)
+    load_config()
+
+    httpx_mock.add_response(url=target_path)
+    # Act
+    response = client.post(url=incoming_path, json=body)
+
+    # Assert
+    assert response.status_code == 204
+
+    request = httpx_mock.get_request()
+    assert request
+    content_json = json.loads(request.content)
+    assert content_json == payload
+
+
+def test_should_send_second_http_request_from_settings_with_replaced_placeholders_from_first_request(
+    set_config_file_path_in_settings: Callable,
+    create_temp_file: Callable,
+    httpx_mock: HTTPXMock,
+):
+    # Arrange
+    incoming_path = "incoming/path"
+    target_path = "http://target/endpoint"
+    target_method = HttpMethodsEnum.POST.value
+    payload_1 = {"a": "${BODY.main.target}"}
+    payload_2 = {"a": "${SIDE_EFFECT[0].payload.from_request_1}"}
+    body = {"main": {"target": "TEST"}}
+    payload_from_request_1 = {"from_request_1": "VALUE"}
+
+    config = ConfigModel(
+        {
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
+                ),
+                side_effects=[
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
+                        url=target_path,
+                        method=target_method,
+                        payload=payload_1,
+                    ),
+                    HttpSideEffectModel(
+                        type=OutcomingTypeEnum.HTTP.value,  # type: ignore[arg-type]
+                        url=target_path,
+                        method=target_method,
+                        payload=payload_2,
+                    ),
+                ],
+            )
+        }
+    )
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
+    config_file_path = create_temp_file(yaml_content)
+    set_config_file_path_in_settings(config_file_path)
+    load_config()
+
+    httpx_mock.add_response(url=target_path, json=payload_from_request_1)
+    httpx_mock.add_response(url=target_path)
+    # Act
+    response = client.post(url=incoming_path, json=body)
+
+    # Assert
+    assert response.status_code == 204
+
+    requests = httpx_mock.get_requests()
+    request = requests[1]
+    assert request
+    content_json = json.loads(request.content)
+    assert content_json == {"a": "VALUE"}

@@ -1,5 +1,6 @@
 from typing import Callable
 
+
 from external.config.config_data import load_config
 from modules.adapters.repositories.config_repository import ConfigRepository
 
@@ -14,7 +15,7 @@ some-instruction:
   incoming: 
     type: http
     path: {incoming_path}
-  outcoming:
+  side_effects:
     type: http
     url: "http://example-host/"
     method: post
@@ -36,21 +37,22 @@ some-instruction:
     # Assert
     assert len(instructions) == 1
 
+
 def test_should_return_instruction_when_correct_data_in_repository_with_proper_values(
     set_config_file_path_in_settings: Callable, create_temp_file: Callable
 ):
     # Arrange
     incoming_path = "endpoint/path/example"
     instruction_name = "some-instruction"
-    outcoming_url = "http://example-host/"
+    side_effects_url = "http://example-host/"
     valid_yaml_config = f"""
 {instruction_name}:
   incoming: 
     type: http
     path: {incoming_path}
-  outcoming:
+  side_effects:
     type: http
-    url: "{outcoming_url}"
+    url: "{side_effects_url}"
     method: post
     payload:     
       field: 1
@@ -68,10 +70,10 @@ def test_should_return_instruction_when_correct_data_in_repository_with_proper_v
     instructions = config_repository.get_instructions(incoming_path)
 
     # Assert
-    assert len(instructions) == 1 
+    assert len(instructions) == 1
 
     instruction_name, instruction = instructions[0]
- 
-    assert instruction_name == instruction_name 
-    assert not isinstance(instruction.outcoming, list)
-    assert instruction.outcoming.url == outcoming_url 
+
+    assert instruction_name == instruction_name
+    assert not isinstance(instruction.side_effects, list)
+    assert instruction.side_effects.url == side_effects_url

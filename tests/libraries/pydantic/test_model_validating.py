@@ -1,4 +1,5 @@
-from typing import Any, Tuple
+from typing import Any
+from typing import Tuple
 
 import pytest
 from pydantic import BaseModel

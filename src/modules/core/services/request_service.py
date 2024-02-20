@@ -6,15 +6,17 @@ from dependency_injector.wiring import Provide
 from dependency_injector.wiring import inject
 from loguru import logger
 
-from modules.adapters.replacers.replacer import crawler
+from modules.adapters.replacers.replacer import replace_placeholder
+from modules.adapters.replacers.replacer import replacer
 from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
 from modules.core.ports.request_maker_port import RequestMakerPort
 from modules.core.ports.request_service_port import RequestServicePort
 
-RequestsToRun = TypeVar("RequestsToRun")
+SideEffect = TypeVar("SideEffect")
 
 
 class RequestService(RequestServicePort):
@@ -34,9 +36,9 @@ class RequestService(RequestServicePort):
                 config_instruction=instruction, config_name=key, body=body
             )
 
-    def _requests_to_run(
-        self, requests_to_run: RequestsToRun | List[RequestsToRun]
-    ) -> List[RequestsToRun]:
+    def _prepare_side_effect(
+        self, requests_to_run: SideEffect | List[SideEffect]
+    ) -> List[SideEffect]:
         if isinstance(requests_to_run, list):
             requests_to_run = requests_to_run
         else:
@@ -51,18 +53,25 @@ class RequestService(RequestServicePort):
             f"Config with name: {config_name} is configured for path: {config_instruction.incoming.path}"
         )
 
-        requests_to_run = self._requests_to_run(config_instruction.outcoming)
+        requests_to_run = self._prepare_side_effect(config_instruction.side_effects)
+        replacers = {
+            "BODY": body,
+        }
 
         for idx, request_to_run in enumerate(requests_to_run):
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
-                crawler(request_to_run.payload, body)
+                replacer(request_to_run.payload, replacers)
+                request_to_run.url = replace_placeholder(request_to_run.url,replacers)
                 try:
                     logger.info(f"Request[{idx}] is starting...")
-                    self.request_maker.make(
-                        url=request_to_run.url,
-                        method=request_to_run.method,
-                        payload=request_to_run.payload,
-                        headers=request_to_run.headers,
+                    side_effect_result: SideEffectResultEntity = (
+                        self.request_maker.make(
+                            url=request_to_run.url,
+                            method=request_to_run.method,
+                            payload=request_to_run.payload,
+                            headers=request_to_run.headers,
+                        )
                     )
+                    replacers[f"SIDE_EFFECT[{idx}]"] = side_effect_result.model_dump()
                 except ServiceUnavailableError:
                     logger.info(f"Error while doing request ({request_to_run})")

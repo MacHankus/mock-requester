@@ -1,4 +1,4 @@
-from modules.adapters.replacers.replacer import crawler
+from modules.adapters.replacers.replacer import replacer
 
 
 def test_replacer_should_replace_values_in_dict():
@@ -7,7 +7,7 @@ def test_replacer_should_replace_values_in_dict():
     body = {"asd": 1}
 
     # Act
-    crawler(d, body)
+    replacer(d, body)
 
     # Assert
     d["a"] == body["asd"]
@@ -19,7 +19,7 @@ def test_replacer_should_replace_values_in_list():
     body = {"asd": 1}
 
     # Act
-    crawler(d, body)
+    replacer(d, body)
 
     # Assert
     d[0] == str(body["asd"])
@@ -31,7 +31,7 @@ def test_replacer_should_replace_values_in_list_of_dicts():
     body = {"asd": 1}
 
     # Act
-    crawler(d, body)
+    replacer(d, body)
 
     # Assert
     d[0]["first"] == body["asd"]
@@ -43,7 +43,7 @@ def test_replacer_should_replace_values_in_lists_of_dicts_strings_with_levels_of
     body = {"main": {"target": 1}}
 
     # Act
-    crawler(d, body)
+    replacer(d, body)
 
     # Assert
     d[0]["first"] == body["main"]["target"]
@@ -55,7 +55,7 @@ def test_replacer_should_replace_values_in_lists_of_dicts_strings_with_levels_of
     body = {"main": {"target1": 1, "target2": 2}}
 
     # Act
-    crawler(d, body)
+    replacer(d, body)
 
     # Assert
     target1=body["main"]["target1"]

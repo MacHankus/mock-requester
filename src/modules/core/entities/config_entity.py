@@ -4,7 +4,6 @@ from typing import Literal
 
 from pydantic import BaseModel
 from pydantic import ConfigDict
-from pydantic import Field
 from pydantic import RootModel
 
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
@@ -18,19 +17,19 @@ class IncomingEntity(BaseModel):
     model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
-class OutcomingHttpEntity(BaseModel):
+class HttpSideEffectEntity(BaseModel):
     type: Literal['http']
     url: str
     method: HttpMethodsEnum
     payload: Dict | None = None
-    headers: Dict = Field(default_factory=lambda: {})
+    headers: Dict | None = None
 
     model_config = ConfigDict(use_enum_values=True, validate_default=True)
 
 
 class ConfigInstructionEntity(BaseModel):
     incoming: IncomingEntity
-    outcoming: List[OutcomingHttpEntity] | OutcomingHttpEntity
+    side_effects: List[HttpSideEffectEntity] | HttpSideEffectEntity
 
 
 class ConfigEntity(RootModel):

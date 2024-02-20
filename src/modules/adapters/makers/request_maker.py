@@ -1,8 +1,11 @@
-from typing import Callable, Dict
+from json import JSONDecodeError
+from typing import Callable
+from typing import Dict
 
 import httpx
 from loguru import logger
 
+from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.http import HttpMethodsEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
 from modules.core.ports.request_maker_port import RequestMakerPort
@@ -25,7 +28,7 @@ class RequestMaker(RequestMakerPort):
         payload: Dict | None = None,
         headers: Dict | None = None,
         params: Dict | None = None,
-    ) -> None:
+    ) -> SideEffectResultEntity:
         logger.info(f"Got request for url: ({url})")
         request_method: Callable | None = None
         request_params: Dict = dict(
@@ -38,15 +41,32 @@ class RequestMaker(RequestMakerPort):
             del request_params["payload"]
         elif method == HttpMethodsEnum.PUT:
             request_method = self.client.put
+        elif method == HttpMethodsEnum.DELETE:
+            request_method = self.client.delete
+        elif method == HttpMethodsEnum.PATCH:
+            request_method = self.client.patch
 
         logger.info(
             f"Parameters in request method={method}, payload={payload}, headers={headers}, params={params}"
         )
         try:
-            response = request_method(**request_params)
+            response: httpx.Response = request_method(**request_params)
+
         except httpx.RequestError:
             logger.exception("Exception during request")
             raise ServiceUnavailableError()
 
         logger.info(f"Target responded with: {response}")
-        return None
+
+        response_json = None
+        try:
+            response_json = response.json()
+        except JSONDecodeError:
+            pass
+
+        return SideEffectResultEntity(
+            status_code=response.status_code,
+            payload=response_json,
+            headers=response.headers,
+            cookies=response.cookies,
+        )
