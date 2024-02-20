@@ -1,10 +1,13 @@
 from typing import Dict
 from typing import List
+from typing import TypeVar
 
 from pydantic import BaseModel
 from pydantic import RootModel
 
 from modules.core.enums.http import HttpMethodsEnum
+
+InstructionNameType = TypeVar("InstructionNameType", bound=str)
 
 
 class IncomingModel(BaseModel):
@@ -26,7 +29,7 @@ class ConfigInstructionModel(BaseModel):
 
 
 class ConfigModel(RootModel):
-    root: Dict[str, ConfigInstructionModel]
+    root: Dict[InstructionNameType, ConfigInstructionModel]
 
     def items(self):
         return self.root.items()
