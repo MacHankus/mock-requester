@@ -34,7 +34,7 @@ class RequestService(RequestServicePort):
                 config_instruction=instruction, config_name=key, body=body
             )
 
-    def _requests_to_run(
+    def _prepare_requests_to_run(
         self, requests_to_run: RequestsToRun | List[RequestsToRun]
     ) -> List[RequestsToRun]:
         if isinstance(requests_to_run, list):
@@ -51,7 +51,7 @@ class RequestService(RequestServicePort):
             f"Config with name: {config_name} is configured for path: {config_instruction.incoming.path}"
         )
 
-        requests_to_run = self._requests_to_run(config_instruction.outcoming)
+        requests_to_run = self._prepare_requests_to_run(config_instruction.outcoming)
 
         for idx, request_to_run in enumerate(requests_to_run):
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
