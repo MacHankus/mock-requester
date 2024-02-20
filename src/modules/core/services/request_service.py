@@ -6,8 +6,9 @@ from dependency_injector.wiring import Provide
 from dependency_injector.wiring import inject
 from loguru import logger
 
-from modules.adapters.replacers.replacer import crawler
+from modules.adapters.replacers.replacer import replace_placeholder, replacer
 from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
@@ -52,17 +53,24 @@ class RequestService(RequestServicePort):
         )
 
         requests_to_run = self._prepare_side_effect(config_instruction.side_effects)
+        replacers = {
+            "BODY": body,
+        }
 
         for idx, request_to_run in enumerate(requests_to_run):
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
-                crawler(request_to_run.payload, body)
+                replacer(request_to_run.payload, replacers)
+                request_to_run.url = replace_placeholder(request_to_run.url,replacers)
                 try:
                     logger.info(f"Request[{idx}] is starting...")
-                    self.request_maker.make(
-                        url=request_to_run.url,
-                        method=request_to_run.method,
-                        payload=request_to_run.payload,
-                        headers=request_to_run.headers,
+                    side_effect_result: SideEffectResultEntity = (
+                        self.request_maker.make(
+                            url=request_to_run.url,
+                            method=request_to_run.method,
+                            payload=request_to_run.payload,
+                            headers=request_to_run.headers,
+                        )
                     )
+                    replacers[f"SIDE_EFFECT[{idx}]"] = side_effect_result.model_dump()
                 except ServiceUnavailableError:
                     logger.info(f"Error while doing request ({request_to_run})")
