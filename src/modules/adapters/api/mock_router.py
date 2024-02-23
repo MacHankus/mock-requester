@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 
 from dependency_injector.wiring import Provide
@@ -8,7 +7,6 @@ from fastapi import Body
 from fastapi import Depends
 from fastapi import Path
 from fastapi import status
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import Response
 
 from modules.core.ports.request_service_port import RequestServicePort
