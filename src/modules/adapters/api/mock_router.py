@@ -7,6 +7,7 @@ from fastapi import Body
 from fastapi import Depends
 from fastapi import Path
 from fastapi import status
+from fastapi.responses import Response
 
 from modules.core.ports.request_service_port import RequestServicePort
 
@@ -20,4 +21,12 @@ def process_post(
     body: Dict = Body(None),
     request_service: RequestServicePort = Depends(Provide["request_service"]),
 ):
-    request_service.make_request(path=rest_of_path, body=body)
+    result = request_service.make_request(path=rest_of_path, body=body)
+
+    if result:
+        return Response(
+            headers=result.headers, 
+            status_code=result.status_code # type: ignore[arg-type]
+        )
+
+    return None

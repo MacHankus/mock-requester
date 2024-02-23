@@ -9,6 +9,7 @@ from loguru import logger
 from modules.adapters.replacers.replacer import replace_placeholder
 from modules.adapters.replacers.replacer import replacer
 from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import RequestResultEntity
 from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
@@ -29,12 +30,14 @@ class RequestService(RequestServicePort):
         self.config_repository = config_repository
         self.request_maker = request_maker
 
-    def make_request(self, path: str, body: Dict) -> None:
+    def make_request(self, path: str, body: Dict) -> RequestResultEntity | None:
         logger.info(f"Running request for config name: {path}")
         for key, instruction in self.config_repository.get_instructions(path=path):
             self._run_request_for_config_task(
                 config_instruction=instruction, config_name=key, body=body
             )
+            return instruction.request_result
+        return None
 
     def _prepare_side_effect(
         self, requests_to_run: SideEffect | List[SideEffect]
@@ -61,7 +64,7 @@ class RequestService(RequestServicePort):
         for idx, request_to_run in enumerate(requests_to_run):
             if request_to_run.type == IncomingRequestsTypeEnum.HTTP:
                 replacer(request_to_run.payload, replacers)
-                request_to_run.url = replace_placeholder(request_to_run.url,replacers)
+                request_to_run.url = replace_placeholder(request_to_run.url, replacers)
                 try:
                     logger.info(f"Request[{idx}] is starting...")
                     side_effect_result: SideEffectResultEntity = (

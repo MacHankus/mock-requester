@@ -1,4 +1,5 @@
-from typing import Dict, MutableMapping
+from typing import Dict
+from typing import MutableMapping
 
 from pydantic import BaseModel
 
