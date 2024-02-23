@@ -17,10 +17,14 @@ class HttpSideEffectModel(BaseModel):
     payload: Dict | None = None
     headers: Dict | None = None
 
+class RequestResultModel(BaseModel):
+    headers: Dict | None = None
+    status_code: int | None = None
 
 class ConfigInstructionModel(BaseModel):
     incoming: IncomingModel
     side_effects: List[HttpSideEffectModel] | HttpSideEffectModel
+    request_result: RequestResultModel | None = None
 
 
 class ConfigModel(RootModel):

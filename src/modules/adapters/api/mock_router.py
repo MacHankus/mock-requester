@@ -1,3 +1,4 @@
+import json
 from typing import Dict
 
 from dependency_injector.wiring import Provide
@@ -7,11 +8,12 @@ from fastapi import Body
 from fastapi import Depends
 from fastapi import Path
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import Response
 
 from modules.core.ports.request_service_port import RequestServicePort
 
 router = APIRouter()
-
 
 @router.post("{rest_of_path:path}", status_code=status.HTTP_204_NO_CONTENT)
 @inject
@@ -20,4 +22,12 @@ def process_post(
     body: Dict = Body(None),
     request_service: RequestServicePort = Depends(Provide["request_service"]),
 ):
-    request_service.make_request(path=rest_of_path, body=body)
+    result = request_service.make_request(path=rest_of_path, body=body)
+
+    if result:
+        return Response(
+            headers=result.headers,
+            status_code=result.status_code,
+        )
+
+    return None

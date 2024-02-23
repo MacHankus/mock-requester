@@ -1,11 +1,15 @@
 import json
 from typing import Callable
+import pytest
 
 import yaml
 from pytest_httpx import HTTPXMock
 
 from external.config.config_data import load_config
-from external.config.data_models.config import ConfigInstructionModel
+from external.config.data_models.config import (
+    ConfigInstructionModel,
+    RequestResultModel,
+)
 from external.config.data_models.config import ConfigModel
 from external.config.data_models.config import HttpSideEffectModel
 from external.config.data_models.config import IncomingModel
@@ -279,3 +283,37 @@ def test_should_send_second_http_request_from_settings_with_replaced_placeholder
     assert request
     content_json = json.loads(request.content)
     assert content_json == {"a": "VALUE"}
+
+
+@pytest.mark.parametrize("status_code", [400, 404, 200])
+def test_should_return_status_code_from_request(
+    set_config_file_path_in_settings: Callable,
+    create_temp_file: Callable,
+    status_code: int,
+):
+    # Arrange
+    incoming_path = "incoming/path"
+
+    config = ConfigModel(
+        {
+            "send_it_somewhere": ConfigInstructionModel(
+                incoming=IncomingModel(
+                    type=IncomingRequestsTypeEnum.HTTP.value, path=incoming_path
+                ),
+                side_effects=[],
+                request_result=RequestResultModel(status_code=status_code),
+            )
+        }
+    )
+    config_dict = config.model_dump()
+    yaml_content = yaml.dump(config_dict)
+    config_file_path = create_temp_file(yaml_content)
+    set_config_file_path_in_settings(config_file_path)
+    load_config()
+
+    # Act
+    response = client.post(url=incoming_path)
+
+    # Assert
+    assert response.status_code == status_code
+

@@ -4,7 +4,10 @@ from typing import Tuple
 from external.config.config_data import config_data
 from external.config.data_models.config import ConfigInstructionModel
 from external.config.data_models.config import HttpSideEffectModel
-from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import (
+    ConfigInstructionEntity,
+    RequestResultEntity,
+)
 from modules.core.entities.config_entity import HttpSideEffectEntity
 from modules.core.entities.config_entity import IncomingEntity
 from modules.core.enums.http import HttpMethodsEnum
@@ -35,7 +38,9 @@ class ConfigRepository(ConfigRepositoryPort):
                 for x in instruction.side_effects
             ]
         if isinstance(instruction.side_effects, HttpSideEffectModel):
-            side_effects = self._create_outcoming_entity_from_model(instruction.side_effects)
+            side_effects = self._create_outcoming_entity_from_model(
+                instruction.side_effects
+            )
         if side_effects is None:
             raise ValueError(
                 "Outcoming section for instruction {instruction} is not valid"
@@ -46,6 +51,10 @@ class ConfigRepository(ConfigRepositoryPort):
                 path=instruction.incoming.path,
             ),
             side_effects=side_effects,
+            request_result=RequestResultEntity(
+                headers=instruction.request_result.headers,
+                status_code=instruction.request_result.status_code,
+            ) if instruction.request_result else None
         )
 
     def get_instructions(self, path: str) -> List[Tuple[str, ConfigInstructionEntity]]:
@@ -54,4 +63,4 @@ class ConfigRepository(ConfigRepositoryPort):
             for name, instruction in config_data.get("config", {}).items()
             if instruction.incoming.path == path
         ]
-        return instructions
+        return instructions[:1]
