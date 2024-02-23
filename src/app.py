@@ -65,7 +65,7 @@ async def log_requests(request: Request, call_next):
     formatted_process_time = "{0:.2f}".format(process_time)
     logger.info(
         f"Finished handling request ({request_id}) completed_in={formatted_process_time}"
-        " status_code={response.status_code}"
+        f" status_code={response.status_code}"
     )
 
     return response
