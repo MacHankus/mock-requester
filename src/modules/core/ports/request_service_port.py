@@ -1,6 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 from typing import Dict
+
 from modules.core.entities.config_entity import RequestResultEntity
 
 

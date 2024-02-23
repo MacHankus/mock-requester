@@ -1,6 +1,7 @@
+from pytest_httpx import HTTPXMock
+
 from modules.adapters.makers.request_maker import RequestMaker
 from modules.core.enums.http import HttpMethodsEnum
-from pytest_httpx import HTTPXMock
 
 
 def test_should_initialize_request_maker():

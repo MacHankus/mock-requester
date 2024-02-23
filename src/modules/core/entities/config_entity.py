@@ -2,9 +2,10 @@ from typing import Dict
 from typing import List
 from typing import Literal
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import RootModel
+from pydantic import validator
 
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.enums.http import HttpMethodsEnum

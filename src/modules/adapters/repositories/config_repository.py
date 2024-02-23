@@ -4,12 +4,10 @@ from typing import Tuple
 from external.config.config_data import config_data
 from external.config.data_models.config import ConfigInstructionModel
 from external.config.data_models.config import HttpSideEffectModel
-from modules.core.entities.config_entity import (
-    ConfigInstructionEntity,
-    RequestResultEntity,
-)
+from modules.core.entities.config_entity import ConfigInstructionEntity
 from modules.core.entities.config_entity import HttpSideEffectEntity
 from modules.core.entities.config_entity import IncomingEntity
+from modules.core.entities.config_entity import RequestResultEntity
 from modules.core.enums.http import HttpMethodsEnum
 from modules.core.ports.config_repository_port import ConfigRepositoryPort
 

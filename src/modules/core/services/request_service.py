@@ -8,7 +8,8 @@ from loguru import logger
 
 from modules.adapters.replacers.replacer import replace_placeholder
 from modules.adapters.replacers.replacer import replacer
-from modules.core.entities.config_entity import ConfigInstructionEntity, RequestResultEntity
+from modules.core.entities.config_entity import ConfigInstructionEntity
+from modules.core.entities.config_entity import RequestResultEntity
 from modules.core.entities.side_effect_result_entity import SideEffectResultEntity
 from modules.core.enums.config_enum import IncomingRequestsTypeEnum
 from modules.core.exceptions.service_unavailable_error import ServiceUnavailableError
