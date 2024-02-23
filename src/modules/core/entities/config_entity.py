@@ -20,9 +20,9 @@ class IncomingEntity(BaseModel):
 
 class RequestResultEntity(BaseModel):
     headers: Dict | None = None
-    status_code: int | None = None
+    status_code: int | None
     
-    @validator('status_code')
+    @validator('status_code', pre=True)
     def set_name(cls, val):
         return val or 204
 

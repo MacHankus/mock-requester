@@ -13,6 +13,7 @@ from modules.core.ports.request_service_port import RequestServicePort
 
 router = APIRouter()
 
+
 @router.post("{rest_of_path:path}", status_code=status.HTTP_204_NO_CONTENT)
 @inject
 def process_post(
@@ -24,8 +25,8 @@ def process_post(
 
     if result:
         return Response(
-            headers=result.headers,
-            status_code=result.status_code,
+            headers=result.headers, 
+            status_code=result.status_code # type: ignore[arg-type]
         )
 
     return None
