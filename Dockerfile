@@ -1,4 +1,4 @@
-FROM 3.12.1-alpine AS builder
+FROM python:3.11.6-alpine AS builder
 
 RUN apt update -y
 
@@ -18,6 +18,8 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 COPY src ./
 COPY README.md ./
+
+RUN apk add curl
 
 RUN poetry config virtualenvs.create false \
     && poetry install
