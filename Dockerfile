@@ -11,6 +11,7 @@ RUN apt install python3-dev -y
 RUN ACCEPT_EULA=Y apt install msodbcsql17 -y
 RUN ACCEPT_EULA=Y apt install mssql-tools -y
 RUN apt install unixodbc-dev -y
+RUN apk add curl
 
 RUN pip install poetry
 
@@ -19,7 +20,6 @@ COPY pyproject.toml poetry.lock ./
 COPY src ./
 COPY README.md ./
 
-RUN apk add curl
 
 RUN poetry config virtualenvs.create false \
     && poetry install
