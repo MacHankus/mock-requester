@@ -14,12 +14,16 @@ from ioc_container import Container
 from ioc_container import wiring_modules
 from modules.adapters.api.mock_router import router
 
+from external.config.config_data import load_config
+
 APP_FROZEN = getattr(sys, "frozen", False)
 
 
 async def create_app() -> FastAPI:
     logger.info(f"{PROJECT_NAME} initialization.")
 
+    load_config()
+    
     application = FastAPI(
         title=PROJECT_NAME,
         root_path="/",
