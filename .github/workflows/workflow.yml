@@ -3,6 +3,12 @@ name: Main workflow
 on:
   pull_request:
     branches: [ "master" ]
+  push:
+    paths:
+      - src/**
+      - tests/**
+      - Dockerfile
+      - pyproject.toml
 jobs:
   lint:
     uses: ./.github/workflows/python-3.11.6-lint.yml
