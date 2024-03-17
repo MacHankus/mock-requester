@@ -1,20 +1,29 @@
-# Cel serwisu
-Celem serwisu jest odbiberanie i wysyłanie predefiniowanych requestów
+# Why
+Idea for the project was simple. 
+If you have test environment that relys on external api and you dont want to write your own mock-api to imitate external api on test environment you can use this project as your mock-api. 
+
+Sometimes external apis are more complex; for example external api needs to call an endpoint from your application and then it return some result or even external api needs to call few other external or internal apis to collect some data and return some data based on it. Mock-requester is able to collect every response and every next call is able to use data returned by previous calls.
+
+# Flowchart
+
+![flowchart](docs/images/mock-requester-flowchart.jpg?raw=true)
 
 # Instrukcja użycia 
-Głównym punktem użytkownia aplikacji jest plik config.yaml - zmienna `CONFIG_FILE_PATH` przechowuje ścieżkę do pliku konfiguracyjnego.
-Plik konfiguracyjny składa się z segmenów 
+Main object inside mock-requester application is configuration file called **config.yaml**. Application use this file to get knowladge about what to do when something is calling mock-requester.
+This file is directly maintained by the user of mock-requester.
+
+Confugiration file is built from segments:
 ```
-mock-external-weight-api: # Nazwa bloku dla lepszej orientacji - bloków może być wiele
+mock-external-weight-api: # Block name for readability
   incoming: 
     type: http
-    path: start_weighing # ścieżka, pod którą aplikacja ma nasłuchiwać bez poprzedzającego slasha np. start_weighing - aplikacja będzie nasłuchiwać pod [POST] http://localhost:9050/start_weighing
-  outcoming: # lista wychodzących requestów - można zdefiniować ich wiele
+    path: do/something/under/this/path # endpoint path that will be used by mock-requester as an entry. In given example mock-requester will listen to every request under this path : [POST] http://localhost:8000/do/something/under/this/path
+  side_effects: # list (or single item) of side effects. This side effects represents calls to some external applications.
     type: http
-    url: "http://localhost:9006/weighting" # url na który ma zostać wysłany request
-    method: post # post, get albo put
-    payload: # payload jest dowolnym dictem/mapą
-      id_route: ${idRoute} # w payloadzi można używać zmiennych odnoszących się do body, które aplikacja odebrała
+    url: "http://external-api:9006/start/doing/external/things" # url that will be used 
+    method: post # for now allowed methods are POST, GET, PUT, DELETE, PATCH 
+    payload: # optional dict with values
+      id_route: ${BODY.idRoute} # you can use placeholders like ${BODY.some_key_from_body}, ${SIDE_EFFECT[1].key_from_payload_returned_from_second_call}
       type_route: ${typeRoute}
       result: 1
       weight: 4
@@ -22,20 +31,10 @@ mock-external-weight-api: # Nazwa bloku dla lepszej orientacji - bloków może b
       Content-Type: application/json
 
 ```
-Powyżej został opisany plik konfiguracyjny.
 
-Ważniejsze kwestie:
-- sekcja outcoming może przechowywać tablicę, więc requestów można wysłać więcej niż 1
-- sekcja payload może zawierać słownik z wartościami, które odnoszą się do body , które aplikacja otrzymała, czyli kiedy do aplikacji wysłany jest payload : {"key": "SECRET"}, to można podać w payloadzie outcoming :
-    ```
-        payload: 
-        name: Random_name
-        key: ${key}
-    ```
-    wówczas zostanie wysłany request z payloadem 
-    ```
-    {
-        "name": "Random_name", 
-        "key" : "SECRET"
-    }
-    ```
+Important details:
+- side_effects could be array or single object
+- payload section of every side_effect can hold placeholders that refferences to body of client's request or responses from previous calls (if side_effects is array)
+
+# Samples
+There are scenarios prepared to see how mock-requester works. Scenarios are placed in [this direction](samples) and there is [readme file](samples/README.md) that describes every scenario and how it works.

@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "mock-requester-api"
+version = "0.1.0"
+description = ""
+authors = ["Maciej Hankus"]
+readme = "README.md"
+packages = []
+
+
+[tool.poetry.dependencies]
+python = "=3.11.6"
+httpx = "0.24.0"
+loguru = "0.7.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "poetry.lock"
+]
+
+[tool.mypy]
+mypy_path = './src'
+explicit_package_bases = 'True'

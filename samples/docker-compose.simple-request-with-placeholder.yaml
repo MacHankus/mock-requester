@@ -1,0 +1,48 @@
+services:
+  mock-requester:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    volumes:
+      - ./simple-request-with-placeholder.yaml:/app/config.yaml
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+  external-api:
+    build:
+      context: ../
+      dockerfile: samples/external-api/Dockerfile
+    environment:
+      APP_NAME: external-api-first
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+  external-api-second:
+    build:
+      context: ../
+      dockerfile: samples/external-api/Dockerfile
+    environment:
+      APP_NAME: external-api-second
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+  client:
+    build:
+      context: ../
+      dockerfile: samples/client/Dockerfile
+    environment:
+      - SCENARIO=simple-request-with-placeholder
+    depends_on:
+      external-api:
+        condition: service_healthy
+      mock-requester:
+        condition: service_healthy

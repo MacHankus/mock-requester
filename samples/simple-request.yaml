@@ -1,0 +1,10 @@
+simple-request:
+  incoming: 
+    type: http
+    path: collect
+  side_effects:
+    type: http
+    url: "http://external-api:8000/save"
+    method: post
+    headers: 
+      Content-Type: application/json
