@@ -1,0 +1,19 @@
+request-chain-with-values-from-side-effects:
+  incoming: 
+    type: http
+    path: collect
+  side_effects:
+    -
+      type: http
+      url: "http://external-api:8000/save"
+      method: post
+      headers: 
+        Content-Type: application/json
+    -
+      type: http
+      url: "http://external-api-second:8000/save"
+      method: post
+      payload:
+        idReturnedByFirstSideEffectWas: ${SIDE_EFFECT[0].payload.request_id}
+      headers: 
+        Content-Type: application/json
