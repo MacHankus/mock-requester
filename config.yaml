@@ -1,8 +1,8 @@
 external-api:
   incoming: 
     type: http
-    path: external-api/endpoint
-  outcoming:
+    path: sample/endpoint
+  side_effects:
     type: http
     url: "http://localhost:9006/"
     method: post

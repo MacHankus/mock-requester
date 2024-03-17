@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Maciej Hankus"]
 readme = "README.md"
-packages = [{ include = "src" }]
 
 
 [tool.poetry.dependencies]
@@ -15,6 +14,9 @@ anyio = "3.7.1"
 loguru = "0.7.2"
 fastapi = "0.109.0"
 pydantic = "2.6.0"
+dependency-injector = "4.41.0"
+pyyaml = "6.0.1"
+pydantic-settings = "2.2.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "0.2.1"
@@ -23,7 +25,7 @@ isort = "5.12.0"
 pytest-httpx = "0.22.0"
 starlette-testclient = "0.3.0"
 mypy = "1.8.0"
-types-pyyaml = "^6.0.12.12"
+types-pyyaml = "6.0.12.12"
 pytest = "7.2.1"
 
 [build-system]
